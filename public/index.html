@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EcoMap Santa Maria – Cidades Limpas, Consciência Ativa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="EcoMap – plataforma colaborativa para mapear pontos de descarte irregular de lixo e apoiar ações de limpeza urbana."
+    />
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">🌱</span>
+        <div>
+          <h1>EcoMap Santa Maria</h1>
+          <p>Cidades limpas, consciência ativa em Santa Maria – RS</p>
+        </div>
+      </div>
+      <div class="ods">
+        <span>ODS 11</span>
+        <span>ODS 12</span>
+        <span>ODS 13</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="left-panel">
+        <section class="card">
+          <h2>Registrar nova denúncia em Santa Maria – RS</h2>
+          <p class="card-subtitle">
+            Ajude a mapear pontos de descarte irregular de lixo em Santa Maria e nos bairros ao
+            redor.
+          </p>
+
+          <form id="report-form">
+            <label>
+              Nome (opcional)
+              <input type="text" id="authorName" placeholder="Você pode deixar em branco" />
+            </label>
+
+            <label>
+              Gravidade do ponto
+              <select id="severity">
+                <option value="baixa">Baixa – poucos resíduos</option>
+                <option value="media" selected>Média – quantidade moderada</option>
+                <option value="alta">Alta – grande acúmulo / risco</option>
+              </select>
+            </label>
+
+            <label>
+              Descrição
+              <textarea
+                id="description"
+                rows="3"
+                placeholder="Ex.: terreno baldio com entulho próximo à UFSM, lixo acumulado perto da linha férrea..."
+              ></textarea>
+            </label>
+
+            <label>
+              Foto (opcional)
+              <input type="file" id="image" accept="image/*" />
+              <small>Formatos comuns de imagem, até ~5MB.</small>
+            </label>
+
+            <div class="form-info">
+              <p>
+                Clique no mapa para marcar o <strong>local exato da denúncia</strong>. Você também
+                pode arrastar o marcador para ajustar o ponto.
+              </p>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submit-btn">
+              Enviar denúncia
+            </button>
+            <p class="helper-text">
+              Este é um protótipo acadêmico. Para acionar o poder público, use também os canais
+              oficiais da sua cidade.
+            </p>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Filtros de visualização em Santa Maria</h2>
+          <div class="filters">
+            <label>
+              Período
+              <select id="dateFilter">
+                <option value="all">Todo o período</option>
+                <option value="24h">Últimas 24h</option>
+                <option value="7d">Últimos 7 dias</option>
+                <option value="30d">Últimos 30 dias</option>
+              </select>
+            </label>
+
+            <fieldset class="severity-group">
+              <legend>Gravidade</legend>
+              <label>
+                <input type="checkbox" value="baixa" checked />
+                Baixa
+              </label>
+              <label>
+                <input type="checkbox" value="media" checked />
+                Média
+              </label>
+              <label>
+                <input type="checkbox" value="alta" checked />
+                Alta
+              </label>
+            </fieldset>
+
+            <button class="btn-secondary" id="applyFilters">Aplicar filtros</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Ranking de engajamento em Santa Maria</h2>
+          <p class="card-subtitle">
+            Usuários com mais denúncias registradas nesta instância do EcoMap.
+          </p>
+          <ol id="ranking-list" class="ranking-list"></ol>
+        </section>
+
+        <section class="card comments-card hidden" id="comments-card">
+          <h2>Comentários da denúncia selecionada</h2>
+          <p class="card-subtitle" id="comments-context">
+            Clique em um ponto no mapa para ver e adicionar comentários.
+          </p>
+
+          <div class="comments-list-wrapper">
+            <ul id="comments-list" class="comments-list"></ul>
+          </div>
+
+          <form id="comment-form" class="comment-form">
+            <label>
+              Nome (opcional)
+              <input type="text" id="commentAuthor" placeholder="Você pode deixar em branco" />
+            </label>
+            <label>
+              Comentário
+              <textarea
+                id="commentText"
+                rows="2"
+                placeholder="Ex.: Já vi caminhões despejando entulho aqui à noite..."
+              ></textarea>
+            </label>
+            <button type="submit" class="btn-secondary" id="comment-submit-btn">
+              Enviar comentário
+            </button>
+          </form>
+        </section>
+      </section>
+
+      <section class="map-panel">
+        <div id="map"></div>
+        <div class="map-legend">
+          <span><span class="dot dot-baixa"></span> Gravidade baixa</span>
+          <span><span class="dot dot-media"></span> Gravidade média</span>
+          <span><span class="dot dot-alta"></span> Gravidade alta</span>
+        </div>
+      </section>
+    </main>
+
+    <section class="city-gallery">
+      <div class="city-gallery-inner">
+        <div class="city-text">
+          <h2>Santa Maria em foco</h2>
+          <p>
+            O EcoMap foi pensado para apoiar ações de educação ambiental, monitoramento de resíduos
+            e cidadania ativa em Santa Maria – RS, conectando bairros como o Centro, Camobi,
+            Tancredo Neves, Nova Santa Marta e muitos outros.
+          </p>
+          <p>
+            As imagens ao lado ilustram pontos marcantes da cidade, que podem se beneficiar de
+            campanhas de preservação e descarte correto de resíduos.
+          </p>
+        </div>
+        <div class="city-images">
+          <figure class="city-image-card">
+            <img
+              src="https://images.pexels.com/photos/5726881/pexels-photo-5726881.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Vista urbana com área verde representando Santa Maria – RS"
+              loading="lazy"
+            />
+            <figcaption>Áreas verdes urbanas que merecem cuidado constante.</figcaption>
+          </figure>
+          <figure class="city-image-card">
+            <img
+              src="https://images.pexels.com/photos/2561628/pexels-photo-2561628.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Rua de bairro com casas e árvores, semelhante a bairros de Santa Maria – RS"
+              loading="lazy"
+            />
+            <figcaption>Bairros residenciais onde o descarte correto faz toda a diferença.</figcaption>
+          </figure>
+          <figure class="city-image-card">
+            <img
+              src="https://images.pexels.com/photos/2531642/pexels-photo-2531642.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Espaço público com pedestres, simbolizando o centro de Santa Maria – RS"
+              loading="lazy"
+            />
+            <figcaption>Espaços públicos mais limpos favorecem o convívio e a mobilidade urbana.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>
+        EcoMap Santa Maria – protótipo para ações de educação ambiental e cidadania na cidade.
+        <br />
+        Ideal para parcerias com escolas, ONGs, prefeituras e projetos de extensão universitária em
+        Santa Maria – RS.
+      </p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
+

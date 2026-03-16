@@ -1,0 +1,26 @@
+{
+  "name": "ecomap",
+  "version": "1.0.0",
+  "description": "EcoMap – Cidades Limpas, Consciência Ativa. Mapa colaborativo de denúncias de descarte irregular de lixo.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "ecomap",
+    "meio-ambiente",
+    "ods",
+    "cidades-sustentaveis"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
